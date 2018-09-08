@@ -1,4 +1,5 @@
 <!--10- 1. There's a <template> part -->
+
 <template>
   <div id="app">
     <h2>My awesome list</h2>
@@ -6,13 +7,20 @@
       <li v-for="p in products" :key="p.id">{{ p.name }}</li>
     </ul>
     <p v-if="!products.length">No products!</p>
-    <button v-on:click="removeLast()">Remove last item</button>
-    <button v-on:click="addItem()">Add item</button>
+    <!-- <button v-on:click="removeLast()">Remove last item</button>
+    <button v-on:click="addItem()">Add item</button> -->
+    <!-- 1. Vue gives as some nice syntax to cope with casual use cases -->
+    <form @submit.prevent="onSubmit()">
+      <!-- 2. Any Angular fan here? v-model makes a binding with given object -->
+      <input v-model="newProduct.name">
+      <button>Add</button>
+    </form>
   </div>
 </template>
 
 <!--21- 2. A <script> part -->
 <script>
+import uuid from 'uuid/v4';
 // 4. Now App is not mounted itself, we're just creating a component (more on that later - hold your horses!)
 export default {
   name: 'app',
@@ -25,20 +33,27 @@ export default {
       }, {
         id: 1,
         name: 'Pizza'
-      }]
+      }],
+            //3/ 3. Here goes the definition
+      newProduct: {
+        name: ''
+      }
     }
   },
   methods: {
     removeLast() {
       this.products.pop();
     },
-    addItem(){
-    this.products.push({
-        id: 4,
-        name: 'Susage'
-      })
 
+      onSubmit() {
+      this.products.push({
+        id: uuid(),
+        ...this.newProduct
+      });
+      this.newProduct.name = '';
     }
+    
+    
     
   }
 }
