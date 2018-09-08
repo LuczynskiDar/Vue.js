@@ -3,13 +3,9 @@
 <template>
   <div id="app">
     <h2>My awesome list</h2>
-    <ul>
-      <li v-for="p in products" :key="p.id">{{ p.name }}</li>
-    </ul>
-    <p v-if="!products.length">No products!</p>
-    <!-- <button v-on:click="removeLast()">Remove last item</button>
-    <button v-on:click="addItem()">Add item</button> -->
-    <!-- 1. Vue gives as some nice syntax to cope with casual use cases -->
+    <!-- 3. Then we can use component by kebab-cased name and providing :input -->
+    <product-list :products="products"></product-list>
+
     <form @submit.prevent="onSubmit()">
       <!-- 2. Any Angular fan here? v-model makes a binding with given object -->
       <!-- <input v-model="newProduct.name"> -->
@@ -30,13 +26,17 @@
   </div>
 </template>
 
-<!--21- 2. A <script> part -->
 <script>
 import uuid from 'uuid/v4';
-// 4. Now App is not mounted itself, we're just creating a component (more on that later - hold your horses!)
+import ProductList from '../components/ProductList'
+
 export default {
   name: 'app',
-  //11/ 5. Data can no longer be just an object to prevent accidental shared state
+  
+  components: {
+    ProductList  
+    },
+
   data() {
     return {
       products: [{
