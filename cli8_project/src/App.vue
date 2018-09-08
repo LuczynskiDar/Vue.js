@@ -12,8 +12,20 @@
     <!-- 1. Vue gives as some nice syntax to cope with casual use cases -->
     <form @submit.prevent="onSubmit()">
       <!-- 2. Any Angular fan here? v-model makes a binding with given object -->
-      <input v-model="newProduct.name">
+      <!-- <input v-model="newProduct.name"> -->
+
+      <input
+        name="product"
+        v-model="newProduct.name"
+        v-validate="'required|min:3'"
+      >
+
       <button>Add</button>
+      <!--3- 2. errors are added by default when validation is initialized and have some useful methods -->
+      <div v-show="errors.has('product')">
+        {{ errors.first('product') }}
+      </div>
+
     </form>
   </div>
 </template>
@@ -45,17 +57,24 @@ export default {
       this.products.pop();
     },
 
-      onSubmit() {
-      this.products.push({
-        id: uuid(),
-        ...this.newProduct
+    onSubmit() {
+      // 3. On the JS side we need to use yet another injected value called $validator to validate all the fields
+      this.$validator.validateAll().then(result => {
+        if (!result) {
+          return;
+        }
+        this.products.push({
+          id: uuid(),
+          ...this.newProduct
+        });
+        this.newProduct.name = '';
+        // 4/ and reset validation state after adding a product
+        this.$validator.reset();
       });
-      this.newProduct.name = '';
     }
-    
-    
-    
+
   }
+    
 }
 </script>
 
